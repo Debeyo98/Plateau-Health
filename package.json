@@ -6,6 +6,11 @@
   "scripts": {
     "start": "nodemon server.js"
   },
+
+  "engines": {
+    "node": "8.10.0"
+  },
+
   "keywords": [
     "RESTful",
     "API"
