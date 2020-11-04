@@ -33,3 +33,6 @@ app.use('/api/user', user);
 app.listen(port, () => {
   console.log(`server started at port ${port}`)
 });
+
+
+//DB =mongodb+srv://Debeyo:DebeyoShemB1988@cluster0.iy8mn.mongodb.net/<dbname>?retryWrites=true&w=majority

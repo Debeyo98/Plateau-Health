@@ -1,6 +1,6 @@
 const express=require('express');
 const router = express.Router();
-const {registerPost, accessService, allServices } = require('../../controller/defaultController');
+const {registerPost, accessService, allServices, bookServices } = require('../../controller/defaultController');
 
 // @route POST api/user/register
 // @description register POST route
@@ -8,6 +8,7 @@ const {registerPost, accessService, allServices } = require('../../controller/de
 router.post('/register', registerPost);
 router.get("/all-services", allServices);
 router.post('/accessService', accessService);
+router.post('/bookServices', bookServices)
 
 
 

@@ -5,6 +5,7 @@ const User = require('../models/user');
 const randomString = require('randomstring');
 const EncounterCode = require('../models/encounterCode');
 const BookserviceCode = require('../models/bookService');
+const RateService = require('../models/rateService');
 
 
 module.exports = {
@@ -38,7 +39,7 @@ module.exports = {
     //         length: 4,
     //         charset: 'alphanumeric'});
     //     const userID = req.params.userID
-        
+
     //     await User.findById(userID, (err, data) => {
     //         if (data) {
     //             res.json({
@@ -51,15 +52,15 @@ module.exports = {
     //         }
     //     })
 
-    // },
+
 
 
     accessService: async (req, res, next) => {
-        const  userID  = req.body.userID;
+        const userID = req.body.userID;
         console.log(userID)
-        await User.findOne({userID:userID})
+        await User.findOne({ userID: userID })
             .then(user => {
-                if(!user){
+                if (!user) {
                     return res.status(404).json({
                         success: false,
                         message: 'User not found',
@@ -72,34 +73,41 @@ module.exports = {
                     charset: 'numeric'
                 });
 
+                const d1 = Number(new Date());
+                const d2 = 1000 * 60 * 60 * 24 * 14;
+
+                let expire = d1 + d2;
+                console.log(expire)
                 newEncounter = new EncounterCode({
-                    encounterCode: encounterCode
+                    encounterCode: encounterCode,
+                    expirationDate: expire
                 })
 
-                
+
                 newEncounter.save()
-                .then(encounter =>{
-                    res.json({
-                        success: true,
-                        message:'This is your encounter code!!!!!',
-                        data: encounter
+                    .then(encounter => {
+                        res.json({
+                            success: true,
+                            message: 'This is your encounter code!!!!!',
+                            data: encounter
+                        })
                     })
-                })
-                .catch(err =>{
-                    res.json({
-                        success: false,
-                        message:'Internal Server error!!!!',
-                        data: err
+                    .catch(err => {
+                        res.json({
+                            success: false,
+                            message: 'Internal Server error!!!!',
+                            data: err
+                        })
                     })
-                })
             })
             .catch((err) => {
                 res.json({
                     status: 500 || "INTERNAL SERVER ERROR",
                     message: "Try again",
+                    data: err
                 })
-            //     res.send(err)
-            //     // next(err);
+                //     res.send(err)
+                //     // next(err);
             })
     },
     allServices: (req, res) => {
@@ -116,5 +124,307 @@ module.exports = {
                 })
             }
         });
-    }
+    },
+
+    bookServices: async (req, res) => {
+        const doctor = 1234;
+        const lab = 5678;
+        const pharmacy = 2468
+
+        let value = req.body.value;
+        let encounter = req.body.encounter
+        if (value == 1) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does not exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${doctor}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    });
+
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        } else if (value == 2) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does note exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${lab}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    })
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        } else if (value == 3) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does note exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${pharmacy}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    })
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        }
+        else if (value == 12) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does note exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${doctor}, ${lab}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    })
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        } else if (value == 13) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does note exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${doctor}, ${pharmacy}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    })
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        } else if (value == 23) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does note exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${lab}, ${pharmacy}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    })
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        } else if (123) {
+            await EncounterCode.findOne({ encounterCode: encounter })
+                .then(encount => {
+                    if (!encount) {
+                        return res.json({
+                            success: false,
+                            message: "encounter code does note exist",
+                            data: null
+                        })
+                    }
+                    console.log(encount)
+                    let v1 = encount.encounterCode;
+
+                    const servicecode = `${v1}:[${doctor}, ${lab}, ${pharmacy}]`
+
+                    const newserviceCode = new BookserviceCode({
+                        bookserviceCode: servicecode
+                    })
+
+                    newserviceCode.save()
+                        .then(bookservice => {
+                            res.json({
+                                success: true,
+                                message: 'Service code created successfully',
+                                data: bookservice
+                            })
+                            return servicecode
+                        })
+                        .catch(err => res.json({
+                            success: false,
+                            message: 'Unable to create service code',
+                            data: null
+                        }))
+
+                })
+        } else {
+            res.json({
+                success: false,
+                message: "No such services",
+                data: null
+            })
+        }
+
+
+    },
+
+    rateService: async (req, res, next) => {
+        const serviceCode = req.params.serviceCode
+
+        let rate = req.body.rate
+        console.log(bookserviceCode)
+        await BookserviceCode.findOne({ serviceCode })
+            .then(serviceCode => {
+                if (!serviceCode) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'User not found',
+                        data: null
+                    })
+                }
+
+
+                newRate = new RateService({
+                    rateService: rate
+                })
+                newRate.save();
+
+                return res.json({
+                    success: true,
+                    message: 'Thank you for rating this service!!!',
+                    data: newRate
+                })
+
+            })
+            .catch((err) => {
+                res.json({
+                    status: 500 || "INTERNAL SERVER ERROR",
+                    message: "Try again",
+                    data: err
+                })
+            })
+    },
 };
