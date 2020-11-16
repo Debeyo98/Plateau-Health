@@ -4,6 +4,7 @@ const User = require('../models/user');
 // const { v4: uuidv4 } = require('uuid')
 const randomString = require('randomstring');
 const EncounterCode = require('../models/encounterCode');
+const Reason = require('../models/bookAppointment');
 const BookserviceCode = require('../models/bookService');
 const RateService = require('../models/rateService');
 
@@ -110,6 +111,51 @@ module.exports = {
                 //     // next(err);
             })
     },
+
+    bookAppointment: async (req, res, next) => {
+        const userID = req.body.userID;
+        console.log(userID)
+        await User.findOne({ userID: userID })
+            .then(user => {
+                if (!user) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'User not found',
+                        data: null
+                    })
+                }
+                newReason = new Reason({
+                    reason: req.body.reason,
+                    userID
+                })
+
+                newReason.save()
+                    .then(encounter => {
+                        res.json({
+                            success: true,
+                            message: 'Your reason to see the doctor has been saved successfully!!!!!',
+                            data: encounter
+                        })
+                    })
+                    .catch(err => {
+                        res.json({
+                            success: false,
+                            message: 'Internal Server error!!!!',
+                            data: err
+                        })
+                    })
+            })
+            .catch((err) => {
+                res.json({
+                    status: 500 || "INTERNAL SERVER ERROR",
+                    message: "Try again",
+                    data: err
+                })
+                //     res.send(err)
+                //     // next(err);
+            })
+    },
+
     allServices: (req, res) => {
         User.find({}, (err, data) => {
             if (!data) {
@@ -126,10 +172,10 @@ module.exports = {
         });
     },
 
-    bookServices: async (req, res) => {
+    bookServices: async (req, res, err) => {
         const doctor = 1234;
         const lab = 5678;
-        const pharmacy = 2468
+        const pharmacy = 2468;
 
         let value = req.body.value;
         let encounter = req.body.encounter
