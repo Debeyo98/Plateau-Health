@@ -171,6 +171,21 @@ module.exports = {
             }
         });
     },
+    allAppointments: (req, res) => {
+        User.find({}, (err, data) => {
+            if (!data) {
+                res.json({
+                    status: 404,
+                    err
+                })
+            } else {
+                res.json({
+                    status: 200,
+                    data
+                })
+            }
+        });
+    },
 
     bookServices: async (req, res, err) => {
         const doctor = 1234;

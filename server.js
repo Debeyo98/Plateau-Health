@@ -35,4 +35,5 @@ app.listen(port, () => {
 });
 
 
+//////////DB =  mongodb://localhost/Debeyo
 //DB =mongodb+srv://Debeyo:DebeyoShemB1988@cluster0.iy8mn.mongodb.net/<dbname>?retryWrites=true&w=majority
