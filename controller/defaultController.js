@@ -172,7 +172,7 @@ module.exports = {
         });
     },
     allAppointments: (req, res) => {
-        User.find({}, (err, data) => {
+        User.find({bookAppointment}, (err, data) => {
             if (!data) {
                 res.json({
                     status: 404,
