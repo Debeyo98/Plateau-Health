@@ -115,6 +115,12 @@ module.exports = {
     bookAppointment: async (req, res, next) => {
         const userID = req.body.userID;
         console.log(userID)
+        if (!userID || !Reason){
+            res.json({
+                success:false,
+                message: 'All fields required!!!!'
+            })
+        } else {
         await User.findOne({ userID: userID })
             .then(user => {
                 if (!user) {
@@ -154,6 +160,7 @@ module.exports = {
                 //     res.send(err)
                 //     // next(err);
             })
+        }
     },
 
     allServices: (req, res) => {
