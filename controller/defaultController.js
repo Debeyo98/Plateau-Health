@@ -121,7 +121,7 @@ module.exports = {
                 message: 'All fields required!!!!'
             })
         } else {
-        await User.findOne({ userID: userID })
+        await User.findOne({ userID })
             .then(user => {
                 if (!user) {
                     return res.status(404).json({
