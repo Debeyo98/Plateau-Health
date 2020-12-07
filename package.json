@@ -6,11 +6,9 @@
   "scripts": {
     "start": "nodemon server.js"
   },
-
   "engines": {
     "node": "8.10.0"
   },
-
   "keywords": [
     "RESTful",
     "API"
@@ -18,19 +16,23 @@
   "author": "Debeyo",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.6"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cloudinary": "^1.23.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-messages": "^1.0.1",
     "express-session": "^1.17.1",
+    "fs": "0.0.1-security",
     "mongoose": "^5.10.9",
     "morgan": "^1.10.0",
+    "multer": "^1.4.2",
     "randomstring": "^1.1.5",
+    "request": "^2.88.2",
     "uuid": "^8.3.1"
   }
 }

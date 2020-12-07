@@ -7,7 +7,12 @@ const EncounterCode = require('../models/encounterCode');
 const Reason = require('../models/bookAppointment');
 const BookserviceCode = require('../models/bookService');
 const RateService = require('../models/rateService');
-
+const { User1 } = require('../models/user1');
+const cloudinary = require('../config/cloudinary');
+const upload = require('../config/multer');
+const request = require('request');
+const fs = require('fs');
+const multer = require('multer');
 
 module.exports = {
     registerPost: async (req, res, err) => {
@@ -35,27 +40,7 @@ module.exports = {
             }
         })
     },
-    // accessService: async (req, res) => {
-    //     const encounterCode = randomString.generate({
-    //         length: 4,
-    //         charset: 'alphanumeric'});
-    //     const userID = req.params.userID
-
-    //     await User.findById(userID, (err, data) => {
-    //         if (data) {
-    //             res.json({
-    //                 message: `Data is found: ${userID} `,
-    //                 encounterCode
-    //             })
-    //             encounterCode.save()
-    //         } else {
-    //             res.json(err)
-    //         }
-    //     })
-
-
-
-
+    
     accessService: async (req, res, next) => {
         const userID = req.body.userID;
         console.log(userID)
@@ -154,7 +139,7 @@ module.exports = {
                 //     res.send(err)
                 //     // next(err);
             })
-        
+
     },
 
     allServices: (req, res) => {
@@ -173,7 +158,7 @@ module.exports = {
         });
     },
     allAppointments: (req, res) => {
-        User.find({bookAppointment}, (err, data) => {
+        User.find({ bookAppointment }, (err, data) => {
             if (!data) {
                 res.json({
                     status: 404,
@@ -489,4 +474,88 @@ module.exports = {
                 })
             })
     },
+    picturePost: async (req, res) => {
+        const avatar = req.file
+        const { name } = req.body
+        // console.log(req.file)
+        try {
+
+            const result = await cloudinary.uploader.upload(req.file.path)
+            // res.json({
+            //     message:"File uploaded successfully",
+            //     result
+            // })
+
+            let user = new User1({
+                name,
+                avatar: result.secure_url,
+                cloudinaryId: result.public_id
+            })
+
+            await user.save()
+                .then(res.json({
+                    message: "file upload successfully",
+                    user
+                }))
+        }
+        catch (err) {
+            console.log(err)
+        }
+    },
+    uploadPicture: async (req, res, next) => {
+        // request.post('http://service.com/upload', {form:{key:'value'}});
+        const download = function(uri, filename, callback){
+            request.head(uri, function(err, res, body){
+            //   console.log('content-type:', res.headers['content-type']);
+            //   console.log('content-length:', res.headers['content-length']);
+          
+              request(uri).pipe(fs.createWriteStream(filename)).on('uploads', callback);
+            });
+          };
+          
+          download('https://www.google.com/images/srpr/logo3w.png', 'google.png', function(){
+            console.log('done');
+          });
+
+        const formData = {
+            custom_file: {
+                value:  fs.createReadStream('/dev/urandom'),
+                options: {
+                  filename: 'topsecret.jpg',
+                  contentType: 'image/jpeg' || 'image/png'
+                }
+              }
+              
+        }
+        request.post({url:'http://service.com/upload', formData: formData}, function optionalCallback(err, httpResponse, body) {
+            if (err) {
+                return console.error('upload failed:', err);
+            }
+            console.log('Upload successful!  Server responded with:', body);
+        });
+        const storage = multer.diskStorage({
+            destination: (req, file, cb) => {
+                cb(null, 'uploads');
+            },
+            filename: (req, file, cb) => {
+                console.log(file);
+                cb(null, Date.now() + path.extname(file.originalname));
+            }
+        });
+        const fileFilter = (req, file, cb) => {
+            if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+                cb(null, true);
+            } else {
+                cb(null, false);
+            }
+        }
+        const uploadPic = await multer({ storage: storage, fileFilter: fileFilter });
+        try {
+            return res.status(201).json({
+                message: 'File uploded successfully'
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 };
